@@ -42,14 +42,11 @@ def calculate_customer_distance_to_office(customer):
 
     return central_angle * EARTH_RADIUS_IN_KM
 
-# first_customer = get_customer_objects('customers.txt')[0]
-# print first_customer
-# print calculate_customer_distance_to_office(first_customer)
 
 def get_customers_to_invite(customers_list):
     """
     Takes in list of customer objects and filters into new list
-    of customers who live within 100km of the Dublin office.
+    of customers using distance calculation function.
 
     Returns a sorted list of nearby customers.
     """
@@ -62,15 +59,22 @@ def get_customers_to_invite(customers_list):
     return sorted_invitations
 
 
-def output_invitation_list(nearby_customers):
+def output_invitation_list(nearby_customers, guestlist_file):
+    """
+    Output results in a text file with customer names and user ids.
 
-    ordered = []
+    """
 
-    for customer in nearby_customers:
+    with open(guestlist_file, 'w') as guestlist:
+        for customer in nearby_customers:
+            guestlist.write(str(customer['user_id']) + ' ' + customer['name'] + '\n')
+
+    return
 
 
 
-
-print get_customers_to_invite(get_customer_objects('customers.txt'))
+all_customers = get_customer_objects('customers.txt')
+invited = get_customers_to_invite(all_customers)
+output_invitation_list(invited, 'guestlist.txt')
  
 
