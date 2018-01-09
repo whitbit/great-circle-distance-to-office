@@ -1,27 +1,43 @@
-import json
+import sys, json, doctest
 from math import radians, cos, sin, asin, sqrt
 
 EARTH_RADIUS_IN_KM = 6371
 INTERCOM_OFFICE = { 'latitude': 53.3381985, 'longitude': -6.2592576 }
 
-def get_customer_objects(customers_data):
+
+def get_all_customers(customers_file):
     """
-    Opens customers text file, converts json into Python dictionary.
+    Opens customers text file and converts string into list of customers as 
+    Python dictionaries.
+    
+    >>> get_all_customers('test.txt') == [{"animal": "dog", "name": "Bronco"}, {"animal": "cat", "name": "Garfield"}]
+    True
 
     """
 
-    customers_list = []
+    all_customers = []
 
-    with open(customers_data) as customers_info:
+    with open(customers_file) as customers_info:
         json_strings = customers_info.read().split('\n')
         for string in json_strings:
-            customers_list.append(json.loads(string))
+            all_customers.append(json.loads(string))
 
-    return customers_list
+    return all_customers
 
-# print open_customer_file('customers.txt')
 
 def calculate_customer_distance_to_office(customer):
+    """
+    Takes in a customer dictionary object with latitude and longitude keys
+    and returns the distance of the customer from the Intercom Dublin office 
+    using the Great Circle Distance Method and the Harversine Formula.
+    
+    >>> calculate_customer_distance_to_office({ 'latitude': 53.3381985, 'longitude': -6.2592576})
+    0.0
+
+    >>> int(calculate_customer_distance_to_office(test_input[2])) in range(int(0.95 * 4887), int(1.05 * 4887))
+    True
+    
+    """
 
     office_lat, office_long = radians(INTERCOM_OFFICE['latitude']), \
                               radians(INTERCOM_OFFICE['longitude'])
@@ -43,12 +59,19 @@ def calculate_customer_distance_to_office(customer):
     return central_angle * EARTH_RADIUS_IN_KM
 
 
-def get_customers_to_invite(customers_list):
+def choose_customers_to_invite(customers_list):
     """
     Takes in list of customer objects and filters into new list
     of customers using distance calculation function.
 
     Returns a sorted list of nearby customers.
+
+    >>> choose_customers_to_invite([{'latitude': 41.49008, 'longitude': -71.312796}])
+    []
+
+    >>> choose_customers_to_invite(test_input) == [{'latitude': 53.1302756, 'user_id': 1, 'longitude': -6.2397222}, {'latitude': 53.2451022, 'user_id': 5, 'longitude': -6.238335}]
+    True
+    
     """
 
     nearby_customers = [customer for customer in customers_list \
@@ -61,7 +84,7 @@ def get_customers_to_invite(customers_list):
 
 def output_invitation_list(nearby_customers, guestlist_file):
     """
-    Output results in a text file with customer names and user ids.
+    Outputs guestlist into a text file with customer names and user ids.
 
     """
 
@@ -72,9 +95,14 @@ def output_invitation_list(nearby_customers, guestlist_file):
     return
 
 
+test_input = [{'latitude': 53.2451022, 'longitude': -6.238335, 'user_id': 5},
+              {'latitude': 53.1302756, 'longitude': -6.2397222, 'user_id': 1},
+              {'latitude': 41.49008, 'longitude': -71.312796, 'user_id': 2}]
 
-all_customers = get_customer_objects('customers.txt')
-invited = get_customers_to_invite(all_customers)
-output_invitation_list(invited, 'guestlist.txt')
- 
 
+if __name__ == '__main__':
+    all_customers = get_all_customers('customers.txt')
+    invited = choose_customers_to_invite(all_customers)
+    output_invitation_list(invited, 'guestlist.txt')
+
+    doctest.testmod()
