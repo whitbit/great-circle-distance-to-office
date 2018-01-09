@@ -48,19 +48,29 @@ def calculate_customer_distance_to_office(customer):
 
 def get_customers_to_invite(customers_list):
     """
-    Takes in list of customer objects.
-    Filters list to customers who live within 100km of office.
+    Takes in list of customer objects and filters into new list
+    of customers who live within 100km of the Dublin office.
+
+    Returns a sorted list of nearby customers.
     """
 
-    return [customer for customer in customers_list \
-           if calculate_customer_distance_to_office(customer) <= 100]
+    nearby_customers = [customer for customer in customers_list \
+                       if calculate_customer_distance_to_office(customer) <= 100]
+
+    sorted_invitations = sorted(nearby_customers, key=lambda customer: customer['user_id'])
+
+    return sorted_invitations
 
 
 def output_invitation_list(nearby_customers):
-    pass
+
+    ordered = []
+
+    for customer in nearby_customers:
 
 
 
-# print get_customers_to_invite(get_customer_objects('customers.txt'))
+
+print get_customers_to_invite(get_customer_objects('customers.txt'))
  
 
