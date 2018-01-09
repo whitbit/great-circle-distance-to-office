@@ -1,4 +1,4 @@
-import sys, json, doctest
+import json, doctest
 from math import radians, cos, sin, asin, sqrt
 
 EARTH_RADIUS_IN_KM = 6371
@@ -34,7 +34,7 @@ def calculate_customer_distance_to_office(customer):
     >>> calculate_customer_distance_to_office({ 'latitude': 53.3381985, 'longitude': -6.2592576})
     0.0
 
-    >>> int(calculate_customer_distance_to_office(test_input[2])) in range(int(0.95 * 4887), int(1.05 * 4887))
+    >>> int(calculate_customer_distance_to_office(test_input[2])) in range(int(0.99 * 4887), int(1.01 * 4887))
     True
     
     """
